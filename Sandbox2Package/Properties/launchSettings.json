@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sandbox2Package": {
+      "commandName": "Project",
+      "commandLineArgs": "Editor.txt"
+    }
+  }
+}
