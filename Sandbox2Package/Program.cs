@@ -81,6 +81,7 @@ namespace ConsoleApp1
                 XElement xReplace = new("Replace", new XAttribute("RequiredFile", pair.Key));
                 XElement CSectorSpawnCategory = new("object", new XAttribute("hash", "464A7F75"));
                 XElement MissionLayer = new("object", new XAttribute("hash", "494C09F2"));
+                MissionLayer.Add(new XElement("primaryKey", new XAttribute("hash", "B88F49FD"), "6400000000000000"));
 
                 foreach (XElement entity in pair.Value)
                     MissionLayer.Add(entity);
