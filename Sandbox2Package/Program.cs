@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using System.IO.Compression;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace ConsoleApp1
@@ -13,10 +8,81 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            string sandboxSavedFile = args[0];
+            string file = args[0];
 
-            string folder = Path.GetDirectoryName(sandboxSavedFile);
+            string folder = Path.GetDirectoryName(file) + "\\";
 
+            string firstLine = File.ReadAllLines(file).First();
+            if (firstLine.StartsWith("<IGE.ObjectSelection"))
+            {
+                ConvertIGESelection(file, folder);
+            }
+            else if (file.EndsWith("EditorConvert.txt"))
+            {
+                ConvertSavedToGroup(file, folder);
+            }
+            else
+            {
+                Convert2Package(file, folder);
+            }
+        }
+
+        static void ConvertIGESelection(string file, string outDir)
+        {
+            List<string> sandboxGroup = new List<string>();
+
+            XDocument doc = XDocument.Load(file);
+
+            string[] center = doc.Root.Attribute("SelCenter").Value.Split(',');
+
+            IEnumerable<XElement> objects = doc.Root.Elements("Object");
+            foreach (XElement obj in objects)
+            {
+                XElement subObj = obj.Element("Object");
+
+                string arkID = subObj.Attribute("LibId").Value;
+                string[] pos = subObj.Attribute("Pos").Value.Split(',');
+                string rot = subObj.Attribute("Angles").Value;
+
+                float posX = float.Parse(pos[0], CultureInfo.InvariantCulture) - float.Parse(center[0], CultureInfo.InvariantCulture);
+                float posY = float.Parse(pos[1], CultureInfo.InvariantCulture) - float.Parse(center[1], CultureInfo.InvariantCulture);
+                float posZ = float.Parse(pos[2], CultureInfo.InvariantCulture) - float.Parse(center[2], CultureInfo.InvariantCulture);
+
+                sandboxGroup.Add($"{arkID},{posX.ToString(CultureInfo.InvariantCulture)},{posY.ToString(CultureInfo.InvariantCulture)},{posZ.ToString(CultureInfo.InvariantCulture)},{rot}");
+            }
+
+            File.WriteAllLines(outDir + "EditorGroup.txt", sandboxGroup.ToArray());
+        }
+
+        static void ConvertSavedToGroup(string file, string outDir)
+        {
+            string[] lines = File.ReadAllLines(file);
+
+            string[] refObj = lines[0].Split(',');
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i] != "")
+                {
+                    string[] split = lines[i].Split(',');
+
+                    float posX = float.Parse(split[1], CultureInfo.InvariantCulture) - float.Parse(refObj[1], CultureInfo.InvariantCulture);
+                    float posY = float.Parse(split[2], CultureInfo.InvariantCulture) - float.Parse(refObj[2], CultureInfo.InvariantCulture);
+                    float posZ = float.Parse(split[3], CultureInfo.InvariantCulture) - float.Parse(refObj[3], CultureInfo.InvariantCulture);
+
+                    split[1] = posX.ToString(CultureInfo.InvariantCulture);
+                    split[2] = posY.ToString(CultureInfo.InvariantCulture);
+                    split[3] = posZ.ToString(CultureInfo.InvariantCulture);
+
+                    lines[i] = string.Join(",", split);
+                }
+            }
+
+            File.WriteAllLines(outDir + "EditorGroup.txt", lines.ToArray());
+        }
+
+        static void Convert2Package(string sandboxSavedFile, string outDir)
+        {
             Dictionary<string, List<XElement>> replaces = new();
 
             int cnt = 0;
@@ -99,7 +165,7 @@ namespace ConsoleApp1
             ms.Seek(0, SeekOrigin.Begin);
 
 
-            ZipArchive zip = ZipFile.Open(folder + "Custom Sandbox Creation.a3", ZipArchiveMode.Create);
+            ZipArchive zip = ZipFile.Open(outDir + "Custom Sandbox Creation.a3", ZipArchiveMode.Create);
             ZipArchiveEntry zipInfo = zip.CreateEntry("info_replace.xml");
             using (Stream entryStream = zipInfo.Open())
             {
