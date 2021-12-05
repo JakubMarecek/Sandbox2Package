@@ -6,9 +6,44 @@ namespace ConsoleApp1
 {
     class Program
     {
+        public static string version = "20211205-2000";
+
         static void Main(string[] args)
         {
+            Console.Title = "Sandbox2Package";
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("*******************************************************************************************");
+            Console.WriteLine("**** Sandbox2Package v" + version);
+            Console.WriteLine("****   Author: ArmanIII");
+            Console.WriteLine("*******************************************************************************************");
+            Console.ResetColor();
+            Console.WriteLine("");
+
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Converts output from Sandbox to own package.");
+                Console.WriteLine("");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("==========================================================================");
+                Console.WriteLine("");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("[Usage]");
+                Console.WriteLine("    Sandbox2Package <file>");
+                Console.WriteLine("    file - output file with saved objects from Sandbox");
+                Console.WriteLine("         - EditorConvert.txt - convert saved to group, so you can use your saved objects to group");
+                Console.WriteLine("         - you can specify txt file with custom editor groups, see https://fallen.ninja/farcry5/items");
+                Console.WriteLine("");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("==========================================================================");
+                Console.WriteLine("");
+                Console.ResetColor();
+                return;
+            }
+
             string file = args[0];
+
+            Console.Title = "Sandbox2Package - " + file;
 
             string folder = Path.GetDirectoryName(file) + "\\";
 
@@ -25,6 +60,8 @@ namespace ConsoleApp1
             {
                 Convert2Package(file, folder);
             }
+
+            Console.WriteLine("FIN!");
         }
 
         static void ConvertIGESelection(string file, string outDir)
@@ -108,7 +145,7 @@ namespace ConsoleApp1
                     entity.Add(new XElement("field", "True", new XAttribute("name", "SpawnThreadSafe"), new XAttribute("type", "Boolean")));
                     entity.Add(new XElement("field", new XAttribute("name", "ArchetypeResDepList"), new XElement("Resource", new XAttribute("ID", $@"entityarchetypeslibrary\{splited[0]}.ark.fcb"))));
 
-                    XElement components = new("object", new XAttribute("name", "Components"));
+                    /*XElement components = new("object", new XAttribute("name", "Components"));
                     {
                         XElement navtComp = new("object", new XAttribute("name", "CNavLinkComponent"));
                         {
@@ -123,7 +160,7 @@ namespace ConsoleApp1
                         }
                         components.Add(eventComp);
                     }
-                    entity.Add(components);
+                    entity.Add(components);*/
 
                     if (!replaces.ContainsKey(conf))
                         replaces.Add(conf, new List<XElement>());
