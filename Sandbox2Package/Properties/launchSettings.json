@@ -2,7 +2,7 @@
   "profiles": {
     "Sandbox2Package": {
       "commandName": "Project",
-      "commandLineArgs": "\"d:\\documents\\fc4_fc5_tools\\Sandbox2Package\\Sandbox2Package\\bin\\Debug\\net6.0\\EditorConvert.txt\""
+      "commandLineArgs": "\"d:\\documents\\fc4_fc5_tools\\Sandbox2Package\\Sandbox2Package\\bin\\Debug\\net6.0\\Editor.txt\""
     }
   }
 }
