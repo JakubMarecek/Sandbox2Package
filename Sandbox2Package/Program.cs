@@ -142,7 +142,7 @@ namespace ConsoleApp1
                 }
             }
 
-            int cnt = 0;
+            long cnt = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             string[] lines = File.ReadAllLines(sandboxSavedFile);
             foreach (string line in lines)
             {
@@ -153,7 +153,7 @@ namespace ConsoleApp1
                     {
                         string conf = GetWorldSectorConfig("fc5_main", splited[1], splited[2]);
 
-                        long entityID = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) + cnt;
+                        long entityID = cnt;
 
                         XElement entity = new("object", new XAttribute("name", "Entity"), new XAttribute("addNode", "1"));
                         entity.Add(new XElement("field", $@"entityarchetypeslibrary\{splited[0]}.ark.fcb", new XAttribute("name", "text_hidArchetypeResId"), new XAttribute("type", "String")));
