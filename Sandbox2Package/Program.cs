@@ -6,7 +6,7 @@ namespace ConsoleApp1
 {
     class Program
     {
-        public static string version = "20211223-1500";
+        public static string version = "20230520-1015";
         public static string outFile = "Custom Sandbox Creation.a3";
 
         static void Main(string[] args)
@@ -144,6 +144,15 @@ namespace ConsoleApp1
 
             long cnt = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             string[] lines = File.ReadAllLines(sandboxSavedFile);
+
+            string selGame = "FC5", selWorld = "fc5_main";
+            foreach (string line in lines)
+            {
+                if (line == "--fc5") { selGame = "FC5"; selWorld = "fc5_main"; }
+                if (line == "--fcnd") { selGame = "FCND"; selWorld = "bowmore_main"; }
+                if (line == "--fc6") { selGame = "FC6"; selWorld = "fc6_main"; }
+            }
+
             foreach (string line in lines)
             {
                 if (line != "" && !line.StartsWith(";"))
@@ -151,7 +160,7 @@ namespace ConsoleApp1
                     string[] splited = line.Split(',');
                     if (splited.Length > 1)
                     {
-                        string conf = GetWorldSectorConfig("fc5_main", splited[1], splited[2]);
+                        string conf = GetWorldSectorConfig(selWorld, splited[1], splited[2]);
 
                         long entityID = cnt;
 
@@ -206,7 +215,7 @@ namespace ConsoleApp1
 
             XDocument xInfoReplaceXML = new(new XDeclaration("1.0", "utf-8", "yes"));
             XElement xInfoReplace = new("PackageInfoReplace");
-            xInfoReplace.Add(new XElement("Games", new XElement("Game", "FC5")));
+            xInfoReplace.Add(new XElement("Games", new XElement("Game", selGame)));
             xInfoReplace.Add(new XElement("Name", "Custom Sandbox Creation"));
             xInfoReplace.Add(new XElement("Description", "Custom placed objects using Sandbox."));
 
