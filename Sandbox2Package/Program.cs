@@ -217,7 +217,7 @@ namespace ConsoleApp1
             XElement xInfoReplace = new("PackageInfoReplace");
             xInfoReplace.Add(new XElement("Games", new XElement("Game", selGame)));
             xInfoReplace.Add(new XElement("Name", "Custom Sandbox Creation"));
-            xInfoReplace.Add(new XElement("Description", "Custom placed objects using Sandbox."));
+            xInfoReplace.Add(new XElement("Description", $"{Environment.NewLine}  Custom placed objects using Sandbox.{Environment.NewLine}{Environment.NewLine}  Generated via Sandbox2Package v{version} by ArmanIII"));
 
             xInfoReplace.Add(xReplaces);
             xInfoReplaceXML.Add(xInfoReplace);
